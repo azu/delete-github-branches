@@ -1,0 +1,74 @@
+{
+  "name": "delete-github-branches",
+  "version": "1.0.0",
+  "description": "Delete GitHub Branches that match patterns.",
+  "keywords": [
+    "github",
+    "api",
+    "branch",
+    "branches"
+  ],
+  "homepage": "https://github.com/azu/delete-github-branches",
+  "bugs": {
+    "url": "https://github.com/azu/delete-github-branches/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/azu/delete-github-branches.git"
+  },
+  "license": "MIT",
+  "author": "azu",
+  "files": [
+    "bin/",
+    "lib/",
+    "src/"
+  ],
+  "main": "lib/delete-github-branches.js",
+  "types": "lib/delete-github-branches.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production tsc -p .",
+    "clean": "rimraf lib/",
+    "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
+    "prepublish": "npm run --if-present build",
+    "test": "mocha \"test/**/*.ts\"",
+    "watch": "tsc -p . --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "prettier": {
+    "printWidth": 120,
+    "singleQuote": false,
+    "tabWidth": 4
+  },
+  "devDependencies": {
+    "@types/mocha": "^7.0.1",
+    "@types/node": "^13.7.7",
+    "cross-env": "^7.0.0",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.8",
+    "mocha": "^7.1.0",
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.6.2",
+    "ts-node-test-register": "^8.0.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@octokit/graphql": "^4.3.1",
+    "@octokit/rest": "^17.0.0",
+    "@textlint/regexp-string-matcher": "^1.1.0"
+  }
+}
