@@ -11,7 +11,7 @@ export const cli = meow(
       --repo  Repo name for repository: owner/**repo**
       --token GitHub Token. you can use als GITHUB_TOKEN env
       --includesBranchPatterns includes branch patterns split by comma. 
-      --excludesBranchPatterns excludes branch patterns split by comma. "master,develop,dev"
+      --excludesBranchPatterns excludes branch patterns split by comma. "master,develop,dev,gh-pages"
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
  

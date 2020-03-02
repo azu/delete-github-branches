@@ -8,7 +8,7 @@ export type deleteGitHubBranchesOptions = {
     /**
      * allow list that match branch names
      * Match all branches without excludesBranchPatterns's default by default
-     * It means that matches branches without ["master", "develop", "dev"]
+     * It means that matches branches without ["master", "develop", "dev", "gh-pages"]
      *
      * You can use RegExp-like string for this list
      * https://github.com/textlint/regexp-string-matcher#regexp-like-string
@@ -19,7 +19,7 @@ export type deleteGitHubBranchesOptions = {
      * Deny list that match branch names
      * You can use RegExp-like string for this list
      * https://github.com/textlint/regexp-string-matcher#regexp-like-string
-     * Default: ["master", "develop", "dev"]
+     * Default: ["master", "develop", "dev", "gh-pages"]
      */
     excludesBranchPatterns?: string[];
 
@@ -164,7 +164,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
         throw new Error("GITHUB_TOKEN is missing");
     }
     const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
-    const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev"];
+    const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
     const results: DeleteBranchResult[] = [];
     const branches = await getAllBranches(options);
     for (const branch of branches) {
