@@ -12,7 +12,7 @@ export type deleteGitHubBranchesOptions = {
      *
      * You can use RegExp-like string for this list
      * https://github.com/textlint/regexp-string-matcher#regexp-like-string
-     * Default: ["/^.*$/g"]
+     * Default: ["/^.*$/"]
      */
     includesBranchPatterns?: string[];
     /**
@@ -163,7 +163,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
     if (!options.GITHUB_TOKEN) {
         throw new Error("GITHUB_TOKEN is missing");
     }
-    const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/g"];
+    const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
     const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev"];
     const results: DeleteBranchResult[] = [];
     const branches = await getAllBranches(options);
