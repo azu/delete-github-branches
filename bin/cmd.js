@@ -3,7 +3,7 @@ require("../lib/cli")
     .run()
     .then(
         results => {
-            console.log(stdout);
+            console.log(JSON.stringify(results, null, 4));
             process.exit(0);
         },
         error => {

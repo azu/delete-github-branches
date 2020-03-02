@@ -17,7 +17,7 @@ export const cli = meow(
  
     Examples
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
-      $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/features\\/\\d+/" --dryRun
+      $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\\/.*/" --dryRun
 `,
     {
         flags: {
@@ -28,8 +28,7 @@ export const cli = meow(
                 type: "string"
             },
             token: {
-                type: "string",
-                default: process.env.GITHUB_TOKEN
+                type: "string"
             },
             includesBranchPatterns: {
                 type: "string"
@@ -61,7 +60,7 @@ export const run = (_input = cli.input, flags = cli.flags) => {
         includesBranchPatterns: flags.includesBranchPatterns ? splitByComma(flags.includesBranchPatterns) : undefined,
         excludesBranchPatterns: flags.excludesBranchPatterns ? splitByComma(flags.excludesBranchPatterns) : undefined,
         baseUrl: flags.baseUrl,
-        GITHUB_TOKEN: flags.token,
+        GITHUB_TOKEN: flags.token ?? process.env.GITHUB_TOKEN,
         dryRun: flags.dryRun
     });
 };

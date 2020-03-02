@@ -17,6 +17,22 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage: CLI
 
+    Usage
+      $ delete-github-branches
+ 
+    Options
+      --owner Owner name for repository: **owner**/repo
+      --repo  Repo name for repository: owner/**repo**
+      --token GitHub Token. you can use als GITHUB_TOKEN env
+      --includesBranchPatterns includes branch patterns split by command. 
+      --excludesBranchPatterns excludes branch patterns split by command. "master,develop,developer"
+      --baseUrl GitHub API base Url.
+      --dryRun if this flag is on, run dry-run mode
+ 
+    Examples
+      $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
+      $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\/.*/" --dryRun
+
 
 ### Usage: Library
 
@@ -38,8 +54,6 @@ Install with [npm](https://www.npmjs.com/):
     ]);
 })()
 ```
-
-- [ ] Write usage instructions
 
 ## Changelog
 

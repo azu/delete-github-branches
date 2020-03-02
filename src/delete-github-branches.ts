@@ -160,6 +160,9 @@ const shouldDelete = (
 };
 export type DeleteBranchResult = { branchName: string; deleted: boolean; reason?: string; error?: Error };
 export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions): Promise<DeleteBranchResult[]> => {
+    if (!options.GITHUB_TOKEN) {
+        throw new Error("GITHUB_TOKEN is missing");
+    }
     const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/g"];
     const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev"];
     const results: DeleteBranchResult[] = [];
