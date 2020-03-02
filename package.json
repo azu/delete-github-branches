@@ -34,7 +34,7 @@
     "clean": "rimraf lib/",
     "prettier": "prettier --write \"**/*.{js,jsx,ts,tsx,css}\"",
     "prepublish": "npm run --if-present build",
-    "test": "mocha \"test/**/*.ts\"",
+    "test": "dotenv mocha \"test/**/*.ts\"",
     "watch": "tsc -p . --watch"
   },
   "husky": {
@@ -57,6 +57,7 @@
     "@types/mocha": "^7.0.1",
     "@types/node": "^13.7.7",
     "cross-env": "^7.0.0",
+    "dotenv-cli": "^3.1.0",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "mocha": "^7.1.0",
