@@ -25,7 +25,7 @@ Install with [npm](https://www.npmjs.com/):
       --repo  Repo name for repository: owner/**repo**
       --token GitHub Token. you can use als GITHUB_TOKEN env
       --includesBranchPatterns includes branch patterns split by command. 
-      --excludesBranchPatterns excludes branch patterns split by command. "master,develop,developer"
+      --excludesBranchPatterns excludes branch patterns split by command. "master,develop,dev"
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
  
