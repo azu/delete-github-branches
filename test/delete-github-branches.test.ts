@@ -10,7 +10,6 @@ describe("deleteGitHubBranches", function() {
             GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
             dryRun: true
         });
-        console.log(JSON.stringify(results));
         assert.deepStrictEqual(results, [
             { branchName: "develop", deleted: false, reason: "It is ignored by includes/excludes patterns" },
             { branchName: "feature/a", deleted: false, reason: "It is ignored by includes/excludes patterns" },

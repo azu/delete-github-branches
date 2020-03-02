@@ -2,13 +2,42 @@
 
 Delete GitHub Branches that match patterns.
 
+## Features
+
+- Can define `includesBranchPatterns`
+- Can define `excludesBranchPatterns`
+- If the branch has associated Pull Requests, Does not delete the branch
+- Have `dryRun` mode
+
 ## Install
 
 Install with [npm](https://www.npmjs.com/):
 
     npm install delete-github-branches
 
-## Usage
+## Usage: CLI
+
+
+### Usage: Library
+
+```ts
+(async () => {
+    const results = await deleteGitHubBranches({
+        owner: "azu",
+        repo: "delete-github-branches-test",
+        excludesBranchPatterns: ["master", "develop", "/feature/.*/"],
+        GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
+        dryRun: true // <= dry run mode
+    });
+    assert.deepStrictEqual(results, [
+        { branchName: "develop", deleted: false, reason: "It is ignored by includes/excludes patterns" },
+        { branchName: "feature/a", deleted: false, reason: "It is ignored by includes/excludes patterns" },
+        { branchName: "feature/b", deleted: false, reason: "It is ignored by includes/excludes patterns" },
+        { branchName: "master", deleted: false, reason: "It is ignored by includes/excludes patterns" },
+        { branchName: "will-be-deleted", deleted: true }
+    ]);
+})()
+```
 
 - [ ] Write usage instructions
 

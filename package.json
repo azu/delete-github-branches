@@ -69,6 +69,7 @@
   "dependencies": {
     "@octokit/graphql": "^4.3.1",
     "@octokit/rest": "^17.0.0",
-    "@textlint/regexp-string-matcher": "^1.1.0"
+    "@textlint/regexp-string-matcher": "^1.1.0",
+    "meow": "^6.0.1"
   }
 }
