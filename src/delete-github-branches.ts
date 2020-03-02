@@ -137,7 +137,7 @@ export const deleteBranch = (options: deleteBranchOptions) => {
     return octokit.git.deleteRef({
         owner: options.owner,
         repo: options.repo,
-        ref: "refs/heads/" + options.branchName
+        ref: "heads/" + options.branchName
     });
 };
 
