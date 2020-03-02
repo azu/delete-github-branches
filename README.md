@@ -61,7 +61,13 @@ See [Releases page](https://github.com/azu/delete-github-branches/releases).
 
 ## Running tests
 
-Install devDependencies and Run `npm test`:
+Add `.env` with `GITHUB_TOKEN`
+
+```
+GITHUB_TOKEN=XXXX
+```
+
+Run tests
 
     npm test
 
