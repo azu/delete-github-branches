@@ -106,7 +106,7 @@ For example, `delete-github-branches.json` is following config.
 And you can pass other options as command line flags 
 
 ```shell script
-$ GITHUb_TOKEN=$GH_TOKEN delete-github-branches --owner azu --repo delete-github-branches-test --config ./delete-github-branches.json
+$ GITHUB_TOKEN=$GH_TOKEN delete-github-branches --owner azu --repo delete-github-branches-test --config ./delete-github-branches.json
 ```
 
 ## Usage: Library
