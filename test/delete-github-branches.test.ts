@@ -8,7 +8,8 @@ describe("deleteGitHubBranches", function() {
             repo: "delete-github-branches-test",
             excludesBranchPatterns: ["master", "develop", "/feature/.*/"],
             GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
-            dryRun: true
+            dryRun: true,
+            stalledDays: 1
         });
         assert.deepStrictEqual(results, [
             { branchName: "develop", deleted: false, reason: "It is ignored by includes/excludes patterns" },

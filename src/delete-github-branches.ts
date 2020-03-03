@@ -1,6 +1,7 @@
 import { graphql } from "@octokit/graphql";
 import { Octokit } from "@octokit/rest";
 import { matchPatterns } from "@textlint/regexp-string-matcher";
+import dayjs from "dayjs";
 
 export type deleteGitHubBranchesOptions = {
     owner: string;
@@ -22,7 +23,13 @@ export type deleteGitHubBranchesOptions = {
      * Default: ["master", "develop", "dev", "gh-pages"]
      */
     excludesBranchPatterns?: string[];
-
+    /**
+     * You can set deletable stalled days after the branch is last pushed
+     * Delete branches that are stalled 30 days by default
+     * if today >= lastPushedDate + 30, its deletable
+     * Default: 30
+     */
+    stalledDays?: number;
     /**
      * Default: 'https://api.github.com'
      */
@@ -44,6 +51,7 @@ export type BranchResponse = {
 };
 export type BranchItem = {
     branchName: string;
+    lastPushedDate: Date;
     /**
      * associated Pull Request that status is OPEN.
      */
@@ -62,6 +70,11 @@ export const getBranches = async (
       refs(refPrefix: "refs/heads/", first: 100, after: $after) {
         edges {
           node {
+            target {
+              ... on Commit {
+                pushedDate
+              }
+            }
             branchName:name
             associatedPullRequests(states: OPEN) {
               totalCount
@@ -89,6 +102,7 @@ export const getBranches = async (
     const branchItems = response.repository.refs.edges.map((edge: any) => {
         return {
             branchName: edge.node?.branchName,
+            lastPushedDate: new Date(edge.node?.target?.pushedDate),
             associatedPullRequests: edge.node?.associatedPullRequests?.totalCount ?? 0
         };
     });
@@ -160,6 +174,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
     if (!options.GITHUB_TOKEN) {
         throw new Error("GITHUB_TOKEN is missing");
     }
+    const stalledDays = options.stalledDays ?? 30;
     const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
     const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
     const results: DeleteBranchResult[] = [];
@@ -175,6 +190,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             });
             continue;
         }
+        // Test includes/excludes pattern
         if (!shouldDelete(branch.branchName, { includesBranchPatterns, excludesBranchPatterns })) {
             results.push({
                 branchName: branch.branchName,
@@ -183,8 +199,18 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             });
             continue;
         }
-        // delete it if disabled dryRun
-
+        // The branch is stalled day is later than options.stalledDays
+        // Today - lastPushedDate
+        const diffDays = dayjs().diff(branch.lastPushedDate, "day");
+        if (diffDays < stalledDays) {
+            results.push({
+                branchName: branch.branchName,
+                reason: `This branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`,
+                deleted: false
+            });
+            continue;
+        }
+        // Finally, delete it if disabled dryRun
         try {
             if (!options.dryRun) {
                 await deleteBranch({
