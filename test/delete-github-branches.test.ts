@@ -7,7 +7,7 @@ describe("deleteGitHubBranches", function() {
             owner: "azu",
             repo: "delete-github-branches-test",
             excludesBranchPatterns: ["master", "develop", "/feature/.*/"],
-            GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
+            token: process.env.GITHUB_TOKEN!,
             dryRun: true,
             stalledDays: 1
         });

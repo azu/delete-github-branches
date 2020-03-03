@@ -1,5 +1,7 @@
 import meow from "meow";
-import { deleteGitHubBranches } from "./delete-github-branches";
+import { deleteGitHubBranches, deleteGitHubBranchesOptions } from "./delete-github-branches";
+import { parseConfig } from "./config-parse";
+import path from "path";
 
 export const cli = meow(
     `
@@ -15,6 +17,7 @@ export const cli = meow(
       --stalledDays Deletable days after the branch is stalled. Default: 30
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
+      --config path to config file
  
     Examples
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
@@ -43,6 +46,9 @@ export const cli = meow(
             dryRun: {
                 type: "boolean",
                 default: false
+            },
+            config: {
+                type: "string"
             }
         },
         autoHelp: true,
@@ -55,13 +61,21 @@ const splitByComma = (str: string) => {
 };
 
 export const run = (_input = cli.input, flags = cli.flags) => {
+    const config: Partial<deleteGitHubBranchesOptions> = flags.config
+        ? parseConfig(path.resolve(process.cwd(), flags.config))
+        : {};
+    // Prefer command line flags than config file
     return deleteGitHubBranches({
-        owner: flags.owner,
-        repo: flags.repo,
-        includesBranchPatterns: flags.includesBranchPatterns ? splitByComma(flags.includesBranchPatterns) : undefined,
-        excludesBranchPatterns: flags.excludesBranchPatterns ? splitByComma(flags.excludesBranchPatterns) : undefined,
-        baseUrl: flags.baseUrl,
-        GITHUB_TOKEN: flags.token ?? process.env.GITHUB_TOKEN,
-        dryRun: flags.dryRun
+        owner: flags.owner ?? config.owner,
+        repo: flags.repo ?? config.repo,
+        includesBranchPatterns: flags.includesBranchPatterns
+            ? splitByComma(flags.includesBranchPatterns)
+            : config.includesBranchPatterns,
+        excludesBranchPatterns: flags.excludesBranchPatterns
+            ? splitByComma(flags.excludesBranchPatterns)
+            : config.excludesBranchPatterns,
+        baseUrl: flags.baseUrl ?? config.baseUrl,
+        token: flags.token ?? config.token ?? process.env.GITHUB_TOKEN,
+        dryRun: flags.dryRun ?? config.dryRun
     });
 };
