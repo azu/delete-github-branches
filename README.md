@@ -139,7 +139,7 @@ See [Releases page](https://github.com/azu/delete-github-branches/releases).
 Add `.env` with `token`
 
 ```
-token=XXXX
+GITHUB_TOKEN=XXXX
 ```
 
 Run tests
