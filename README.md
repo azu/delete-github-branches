@@ -17,7 +17,6 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage: CLI
 
-
     Usage
       $ delete-github-branches
  
@@ -30,12 +29,87 @@ Install with [npm](https://www.npmjs.com/):
       --stalledDays Deletable days after the branch is stalled. Default: 30
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
+      --config path to config file
  
     Examples
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\/.*/" --dryRun
 
-### Usage: Library
+### Config File
+
+Config file is following JSON format.
+
+All property is optional and its can be combined with command line flags.
+
+```ts
+{
+    /**
+     * Repository owner name
+     */
+    owner?: string;
+    /**
+     * Repository name
+     */
+    repo?: string;
+    /**
+     * allow list that match branch names
+     * Match all branches without excludesBranchPatterns's default by default
+     * It means that matches branches without ["master", "develop", "dev", "gh-pages"]
+     *
+     * You can use RegExp-like string for this list
+     * https://github.com/textlint/regexp-string-matcher#regexp-like-string
+     * Default: ["/^.*$/"]
+     */
+    includesBranchPatterns?: string[];
+    /**
+     * Deny list that match branch names
+     * You can use RegExp-like string for this list
+     * https://github.com/textlint/regexp-string-matcher#regexp-like-string
+     * Default: ["master", "develop", "dev", "gh-pages"]
+     */
+    excludesBranchPatterns?: string[];
+    /**
+     * You can set deletable stalled days after the branch is last pushed
+     * Delete branches that are stalled 30 days by default
+     * if today >= lastPushedDate + 30, its deletable
+     * Default: 30
+     */
+    stalledDays?: number;
+    /**
+     * Default: 'https://api.github.com'
+     */
+    baseUrl?: string;
+    /**
+     * GitHub Token
+     */
+    token?: string;
+    /**
+     * If `dryRun` is `true`, does not delete actually
+     * Dry-run mode fetch and dump
+     * Default: false
+     */
+    dryRun?: boolean;
+}
+```
+
+For example, `delete-github-branches.json` is following config.
+
+`delete-github-branches.json`:
+
+```json
+{
+    "includesBranchPatterns":  ["/^.*$/"],
+    "excludesBranchPatterns": ["master", "develop", "dev", "gh-pages", "/^feature\/.*$/"]
+}
+```
+
+And you can pass other options as command line flags 
+
+```shell script
+$ GITHUb_TOKEN=$GH_TOKENd elete-github-branches --owner azu --repo delete-github-branches-test --config ./delete-github-branches.json
+```
+
+## Usage: Library
 
 ```ts
 (async () => {
@@ -43,7 +117,7 @@ Install with [npm](https://www.npmjs.com/):
         owner: "azu",
         repo: "delete-github-branches-test",
         excludesBranchPatterns: ["master", "develop", "/feature/.*/"],
-        GITHUB_TOKEN: process.env.GITHUB_TOKEN!,
+        token: process.env.token!,
         dryRun: true // <= dry run mode
     });
     assert.deepStrictEqual(results, [
@@ -62,10 +136,10 @@ See [Releases page](https://github.com/azu/delete-github-branches/releases).
 
 ## Running tests
 
-Add `.env` with `GITHUB_TOKEN`
+Add `.env` with `token`
 
 ```
-GITHUB_TOKEN=XXXX
+token=XXXX
 ```
 
 Run tests

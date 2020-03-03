@@ -4,7 +4,13 @@ import { matchPatterns } from "@textlint/regexp-string-matcher";
 import dayjs from "dayjs";
 
 export type deleteGitHubBranchesOptions = {
+    /**
+     * Repository owner name
+     */
     owner: string;
+    /**
+     * Repository name
+     */
     repo: string;
     /**
      * allow list that match branch names
@@ -34,7 +40,10 @@ export type deleteGitHubBranchesOptions = {
      * Default: 'https://api.github.com'
      */
     baseUrl?: string;
-    GITHUB_TOKEN: string;
+    /**
+     * GitHub Token
+     */
+    token: string;
     /**
      * If `dryRun` is `true`, does not delete actually
      * Dry-run mode fetch and dump
@@ -93,7 +102,7 @@ export const getBranches = async (
         after: options.cursor,
         baseUrl: options.baseUrl ?? "https://api.github.com",
         headers: {
-            authorization: `token ${options.GITHUB_TOKEN}`
+            authorization: `token ${options.token}`
         }
     });
     if (!response) {
@@ -138,11 +147,11 @@ export type deleteBranchOptions = {
      * Default: 'https://api.github.com'
      */
     baseUrl?: string;
-    GITHUB_TOKEN: string;
+    token: string;
 };
 export const deleteBranch = (options: deleteBranchOptions) => {
     const octokit = new Octokit({
-        auth: options.GITHUB_TOKEN,
+        auth: options.token,
         baseUrl: options.baseUrl ?? "https://api.github.com"
     });
     return octokit.git.deleteRef({
@@ -171,7 +180,7 @@ const shouldDelete = (
 };
 export type DeleteBranchResult = { branchName: string; deleted: boolean; reason?: string; error?: Error };
 export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions): Promise<DeleteBranchResult[]> => {
-    if (!options.GITHUB_TOKEN) {
+    if (!options.token) {
         throw new Error("GITHUB_TOKEN is missing");
     }
     const stalledDays = options.stalledDays ?? 30;
@@ -218,7 +227,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
                     repo: options.repo,
                     branchName: branch.branchName,
                     baseUrl: options.baseUrl,
-                    GITHUB_TOKEN: options.GITHUB_TOKEN
+                    token: options.token
                 });
             }
             results.push({
