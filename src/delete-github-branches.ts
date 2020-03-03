@@ -26,7 +26,7 @@ export type deleteGitHubBranchesOptions = {
     /**
      * You can set deletable stalled days after the branch is last pushed
      * Delete branches that are stalled 30 days by default
-     * The branch will be deletable after 30 + 1 day
+     * if today >= lastPushedDate + 30, its deletable
      * Default: 30
      */
     stalledDays?: number;
@@ -202,7 +202,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
         // The branch is stalled day is later than options.stalledDays
         // Today - lastPushedDate
         const diffDays = dayjs().diff(branch.lastPushedDate, "day");
-        if (diffDays <= stalledDays) {
+        if (diffDays < stalledDays) {
             results.push({
                 branchName: branch.branchName,
                 reason: `This branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`,
