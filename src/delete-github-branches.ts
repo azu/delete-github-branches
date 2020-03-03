@@ -183,6 +183,12 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
     if (!options.token) {
         throw new Error("GITHUB_TOKEN is missing");
     }
+    if (!options.owner) {
+        throw new Error("owner is missing");
+    }
+    if (!options.repo) {
+        throw new Error("repo is missing");
+    }
     const stalledDays = options.stalledDays ?? 30;
     const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
     const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
@@ -214,8 +220,8 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
         if (diffDays < stalledDays) {
             results.push({
                 branchName: branch.branchName,
-                reason: `This branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`,
-                deleted: false
+                deleted: false,
+                reason: `This branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`
             });
             continue;
         }
