@@ -44,6 +44,9 @@ export type BranchResponse = {
 };
 export type BranchItem = {
     branchName: string;
+    /**
+     * associated Pull Request that status is OPEN.
+     */
     associatedPullRequests: number;
 };
 export const getBranches = async (
@@ -60,7 +63,7 @@ export const getBranches = async (
         edges {
           node {
             branchName:name
-            associatedPullRequests {
+            associatedPullRequests(states: OPEN) {
               totalCount
             }
           }
