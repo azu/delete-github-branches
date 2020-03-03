@@ -17,6 +17,7 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage: CLI
 
+
     Usage
       $ delete-github-branches
  
@@ -24,15 +25,15 @@ Install with [npm](https://www.npmjs.com/):
       --owner Owner name for repository: **owner**/repo
       --repo  Repo name for repository: owner/**repo**
       --token GitHub Token. you can use als GITHUB_TOKEN env
-      --includesBranchPatterns includes branch patterns split by comma. 
-      --excludesBranchPatterns excludes branch patterns split by comma. "master,develop,dev,gh-pages"
+      --includesBranchPatterns includes branch patterns split by comma. Default: "/^.*$/" (all)
+      --excludesBranchPatterns excludes branch patterns split by comma. Default: "master,develop,dev,gh-pages"
+      --stalledDays Deletable days after the branch is stalled. Default: 30
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
  
     Examples
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\/.*/" --dryRun
-
 
 ### Usage: Library
 
