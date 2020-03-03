@@ -51,19 +51,12 @@ export const getBranches = async (
         cursor?: string;
     }
 ): Promise<BranchResponse> => {
-    let paging = "";
-    if (options.cursor === undefined) {
-        paging = "";
-    } else {
-        paging = ` after: "${options.cursor}"`;
-    }
-
     const response = await graphql({
-        query: `query getExistingRepoBranches($owner: String!, $repo: String!) {
+        query: `query getExistingRepoBranches($owner: String!, $repo: String!, $after: String) {
     repository(owner: $owner, name: $repo) {
       id
       name
-      refs(refPrefix: "refs/heads/", first: 100${paging}) {
+      refs(refPrefix: "refs/heads/", first: 100, after: $after) {
         edges {
           node {
             branchName:name
@@ -81,6 +74,7 @@ export const getBranches = async (
 }`,
         owner: options.owner,
         repo: options.repo,
+        after: options.cursor,
         baseUrl: options.baseUrl ?? "https://api.github.com",
         headers: {
             authorization: `token ${options.GITHUB_TOKEN}`
