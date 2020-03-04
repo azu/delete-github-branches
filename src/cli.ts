@@ -40,6 +40,9 @@ export const cli = meow(
             excludesBranchPatterns: {
                 type: "string"
             },
+            stalledDays: {
+                type: "number"
+            },
             baseUrl: {
                 type: "string"
             },
@@ -74,6 +77,7 @@ export const run = (_input = cli.input, flags = cli.flags) => {
         excludesBranchPatterns: flags.excludesBranchPatterns
             ? splitByComma(flags.excludesBranchPatterns)
             : config.excludesBranchPatterns,
+        stalledDays: flags.stalledDays ?? config.stalledDays,
         baseUrl: flags.baseUrl ?? config.baseUrl,
         token: flags.token ?? config.token ?? process.env.GITHUB_TOKEN,
         dryRun: flags.dryRun ?? config.dryRun
