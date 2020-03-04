@@ -1,6 +1,6 @@
 {
   "name": "delete-github-branches",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Delete GitHub Branches that match patterns.",
   "keywords": [
     "github",
