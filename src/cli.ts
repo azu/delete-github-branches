@@ -36,7 +36,7 @@ export const cli = meow(
             },
             format: {
                 type: "string",
-                default: "json"
+                default: "markdown"
             },
             token: {
                 type: "string"
@@ -104,7 +104,7 @@ export const run = async (_input = cli.input, flags = cli.flags) => {
             results
         });
     } else {
-        return formatJSON({
+        return formatMarkdown({
             owner,
             repo,
             results

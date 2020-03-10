@@ -16,14 +16,14 @@ export const formatMarkdown = ({
         return result.deleted;
     });
     const formatResult = (result: DeleteBranchResult): string => {
-        return `- [${result.branchName}](https://github.com/${owner}/${repo}/tree/${result.branchName})
-> ${
+        return `- [${result.branchName}](https://github.com/${owner}/${repo}/tree/${result.branchName})${
             result.reason
-                ? result.reason
+                ? "\n" +
+                  result.reason
                       .split("\n")
                       .map(line => `> ${line}`)
                       .join("\n")
-                : "No reason"
+                : ""
         }`;
     };
     return `
