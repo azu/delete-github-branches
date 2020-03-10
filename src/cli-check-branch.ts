@@ -60,7 +60,7 @@ export const run = async (input = cli.input, flags = cli.flags) => {
         return shouldDelete(branchName, { includesBranchPatterns, excludesBranchPatterns });
     });
     if (deletedBranchNames.length > 0) {
-        return { exitStatus: 1, stderr: new Error(`${deletedBranchNames.join(",")} will be deleted`), stdout: null };
+        return { exitStatus: 1, stderr: null, stdout: `${deletedBranchNames.join(",")} will be deleted` };
     } else {
         return { exitStatus: 0, stderr: null, stdout: `${input.join(",")} will not be deleted` };
     }
