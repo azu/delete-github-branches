@@ -24,7 +24,8 @@
     "src/"
   ],
   "bin": {
-    "delete-github-branches": "./bin/cmd.js"
+    "delete-github-branches": "./bin/cmd.js",
+    "delete-github-branches-check-branch-name": "bin/check-branch.js"
   },
   "main": "lib/delete-github-branches.js",
   "types": "lib/delete-github-branches.d.ts",

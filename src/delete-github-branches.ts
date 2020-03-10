@@ -160,23 +160,25 @@ export const deleteBranch = (options: deleteBranchOptions) => {
         ref: "heads/" + options.branchName
     });
 };
-
-const shouldDelete = (
+/**
+ * Return true if it will be deleted
+ * @param branchName
+ * @param options
+ */
+export const shouldDelete = (
     branchName: string,
-    {
-        includesBranchPatterns,
-        excludesBranchPatterns
-    }: {
-        includesBranchPatterns: string[];
-        excludesBranchPatterns: string[];
+    options: {
+        includesBranchPatterns?: string[];
+        excludesBranchPatterns?: string[];
     }
 ) => {
+    const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
+    const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
     const shouldNotDelete = matchPatterns(branchName, excludesBranchPatterns).length > 0;
     if (shouldNotDelete) {
         return false;
     }
-    const shouldDelete = matchPatterns(branchName, includesBranchPatterns).length > 0;
-    return shouldDelete;
+    return matchPatterns(branchName, includesBranchPatterns).length > 0;
 };
 export type DeleteBranchResult = { branchName: string; deleted: boolean; reason?: string; error?: Error };
 export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions): Promise<DeleteBranchResult[]> => {
@@ -190,8 +192,6 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
         throw new Error("repo is missing");
     }
     const stalledDays = options.stalledDays ?? 30;
-    const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
-    const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
     const results: DeleteBranchResult[] = [];
     const branches = await getAllBranches(options);
     for (const branch of branches) {
@@ -206,7 +206,12 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             continue;
         }
         // Test includes/excludes pattern
-        if (!shouldDelete(branch.branchName, { includesBranchPatterns, excludesBranchPatterns })) {
+        if (
+            !shouldDelete(branch.branchName, {
+                includesBranchPatterns: options.includesBranchPatterns,
+                excludesBranchPatterns: options.excludesBranchPatterns
+            })
+        ) {
             results.push({
                 branchName: branch.branchName,
                 deleted: false,

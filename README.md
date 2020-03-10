@@ -37,6 +37,27 @@ Install with [npm](https://www.npmjs.com/):
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN>
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\/.*/" --dryRun
 
+Also this package includes helper cli tool.
+`delete-github-branches-check-branch-name` just detect if the branch name will be deleted?
+
+
+    Usage
+      $ delete-github-branches-check-branch-name [branchName]
+ 
+    Options
+      --includesBranchPatterns includes branch patterns split by comma. Default: "/^.*$/" (all)
+      --excludesBranchPatterns excludes branch patterns split by comma. Default: "master,develop,dev,gh-pages"
+      --config path to config file
+ 
+    Examples
+      $ delete-github-branches-check-branch-name "feature/009"
+      $ echo $? # 0
+      # It will be alive and exit code: 0
+      $ delete-github-branches-check-branch-name "patch-101"
+      $ echo $? # 1
+      # It will be deleted and exit code: 1
+    
+
 ### Config File
 
 Config file is following JSON format.

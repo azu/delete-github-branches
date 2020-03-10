@@ -8,7 +8,7 @@ import { formatMarkdown } from "./formatters/markdown";
 export const cli = meow(
     `
     Usage
-      $ delete-github-branches
+      $ delete-github-branches [option]
  
     Options
       --owner Owner name for repository: **owner**/repo
