@@ -38,8 +38,7 @@ Install with [npm](https://www.npmjs.com/):
       $ delete-github-branches --owner azu --repo delete-github-branches-test --token <TOKEN> --includesBranchPatterns "/feature\/.*/" --dryRun
 
 Also this package includes helper cli tool.
-`delete-github-branches-check-branch-name` just detect if the branch name will be deleted?
-
+`delete-github-branches-check-branch-name` just detect if the branch name is matched patterns.
 
     Usage
       $ delete-github-branches-check-branch-name [branchName]
