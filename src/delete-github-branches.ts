@@ -244,7 +244,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             results.push({
                 branchName: branch.branchName,
                 deleted: false,
-                reason: "Error",
+                reason: error.message,
                 error
             });
         }

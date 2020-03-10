@@ -2,6 +2,8 @@ import meow from "meow";
 import { deleteGitHubBranches, deleteGitHubBranchesOptions } from "./delete-github-branches";
 import { parseConfig } from "./config-parse";
 import path from "path";
+import { formatJSON } from "./formatters/json";
+import { formatMarkdown } from "./formatters/markdown";
 
 export const cli = meow(
     `
@@ -15,6 +17,7 @@ export const cli = meow(
       --includesBranchPatterns includes branch patterns split by comma. Default: "/^.*$/" (all)
       --excludesBranchPatterns excludes branch patterns split by comma. Default: "master,develop,dev,gh-pages"
       --stalledDays Deletable days after the branch is stalled. Default: 30
+      --format Output formatter. Available: "markdown", "json". Default: "markdown"
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
       --config path to config file
@@ -30,6 +33,10 @@ export const cli = meow(
             },
             repo: {
                 type: "string"
+            },
+            format: {
+                type: "string",
+                default: "json"
             },
             token: {
                 type: "string"
@@ -63,14 +70,16 @@ const splitByComma = (str: string) => {
     return str.split(",").map(item => item.trim());
 };
 
-export const run = (_input = cli.input, flags = cli.flags) => {
+export const run = async (_input = cli.input, flags = cli.flags) => {
     const config: Partial<deleteGitHubBranchesOptions> = flags.config
         ? parseConfig(path.resolve(process.cwd(), flags.config))
         : {};
     // Prefer command line flags than config file
-    return deleteGitHubBranches({
-        owner: flags.owner ?? config.owner,
-        repo: flags.repo ?? config.repo,
+    const owner = flags.owner ?? config.owner;
+    const repo = flags.repo ?? config.repo;
+    const results = await deleteGitHubBranches({
+        owner: owner,
+        repo: repo,
         includesBranchPatterns: flags.includesBranchPatterns
             ? splitByComma(flags.includesBranchPatterns)
             : config.includesBranchPatterns,
@@ -82,4 +91,23 @@ export const run = (_input = cli.input, flags = cli.flags) => {
         token: flags.token ?? config.token ?? process.env.GITHUB_TOKEN,
         dryRun: flags.dryRun ?? config.dryRun
     });
+    if (flags.format === "json") {
+        return formatJSON({
+            owner,
+            repo,
+            results
+        });
+    } else if (flags.format === "markdown") {
+        return formatMarkdown({
+            owner,
+            repo,
+            results
+        });
+    } else {
+        return formatJSON({
+            owner,
+            repo,
+            results
+        });
+    }
 };

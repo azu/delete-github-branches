@@ -17,16 +17,18 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage: CLI
 
+
     Usage
       $ delete-github-branches
  
     Options
       --owner Owner name for repository: **owner**/repo
       --repo  Repo name for repository: owner/**repo**
-      --token GitHub Token. you can use also GITHUB_TOKEN env
+      --token GitHub Token. you can use als GITHUB_TOKEN env
       --includesBranchPatterns includes branch patterns split by comma. Default: "/^.*$/" (all)
       --excludesBranchPatterns excludes branch patterns split by comma. Default: "master,develop,dev,gh-pages"
       --stalledDays Deletable days after the branch is stalled. Default: 30
+      --format Output formatter. Available: "markdown", "json". Default: "markdown"
       --baseUrl GitHub API base Url.
       --dryRun if this flag is on, run dry-run mode
       --config path to config file
