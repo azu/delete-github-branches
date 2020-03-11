@@ -79,10 +79,14 @@ export const run = async (input = cli.input, flags = cli.flags) => {
             exitStatus: 0,
             stderr: null,
             stdout: `${input.join(",")} is not matched by delete-github-branches's patterns: 
-{ 
-    includesBranchPatterns: ${JSON.stringify(includesBranchPatterns)}             
-    excludesBranchPatterns: ${JSON.stringify(excludesBranchPatterns)}             
-}`
+${JSON.stringify(
+    {
+        includesBranchPatterns: includesBranchPatterns,
+        excludesBranchPatterns: excludesBranchPatterns
+    },
+    null,
+    4
+)}`
         };
     }
 };
