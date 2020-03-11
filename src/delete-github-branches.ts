@@ -219,7 +219,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             results.push({
                 branchName: branch.branchName,
                 deleted: false,
-                reason: `This branch is matched patterns, but it has associated PullRequests: ${branch.associatedPullRequests}`
+                reason: `This branch is matched patterns, but it has associated Opened PullRequests: ${branch.associatedPullRequests}`
             });
             continue;
         }
