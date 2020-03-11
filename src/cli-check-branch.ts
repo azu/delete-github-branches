@@ -69,10 +69,14 @@ export const run = async (input = cli.input, flags = cli.flags) => {
             exitStatus: 1,
             stderr: null,
             stdout: `${deletedBranchNames.join(",")} is matched by delete-github-branches's patterns:
-{ 
-    includesBranchPatterns: ${includesBranchPatterns.join(",")}             
-    excludesBranchPatterns: ${excludesBranchPatterns.join(",")}             
-}`
+${JSON.stringify(
+    {
+        includesBranchPatterns: includesBranchPatterns,
+        excludesBranchPatterns: excludesBranchPatterns
+    },
+    null,
+    4
+)}`
         };
     } else {
         return {
