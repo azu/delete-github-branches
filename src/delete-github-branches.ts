@@ -226,7 +226,11 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
         // The branch is stalled day is later than options.stalledDays
         // Today - lastPushedDate
         const diffDays = dayjs().diff(branch.lastPushedDate, "day");
-        if (diffDays <= stalledDays) {
+        // if diffDays is 10 and stalledDays is 0, delete it
+        // if diffDays is 10 and stalledDays is 9, delete it
+        // if diffDays is 10 and stalledDays is 10, delete it
+        // if diffDays is 10 and stalledDays is 11, does not delete it
+        if (diffDays < stalledDays) {
             results.push({
                 branchName: branch.branchName,
                 deleted: false,
