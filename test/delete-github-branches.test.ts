@@ -12,10 +12,10 @@ describe("deleteGitHubBranches", function() {
             stalledDays: 1
         });
         assert.deepStrictEqual(results, [
-            { branchName: "develop", deleted: false, reason: "It is ignored by includes/excludes patterns" },
-            { branchName: "feature/a", deleted: false, reason: "It is ignored by includes/excludes patterns" },
-            { branchName: "feature/b", deleted: false, reason: "It is ignored by includes/excludes patterns" },
-            { branchName: "master", deleted: false, reason: "It is ignored by includes/excludes patterns" },
+            { branchName: "develop", deleted: false, reason: "This branch is ignored by includes/excludes patterns" },
+            { branchName: "feature/a", deleted: false, reason: "This branch is ignored by includes/excludes patterns" },
+            { branchName: "feature/b", deleted: false, reason: "This branch is ignored by includes/excludes patterns" },
+            { branchName: "master", deleted: false, reason: "This branch is ignored by includes/excludes patterns" },
             { branchName: "will-be-deleted", deleted: true }
         ]);
     });
