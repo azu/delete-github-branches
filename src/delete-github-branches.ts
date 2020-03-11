@@ -196,16 +196,6 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
     const results: DeleteBranchResult[] = [];
     const branches = await getAllBranches(options);
     for (const branch of branches) {
-        // if the branch has associated Pull Request, skip it
-        const hasBranchAssociatedPullRequests = branch.associatedPullRequests > 0;
-        if (hasBranchAssociatedPullRequests) {
-            results.push({
-                branchName: branch.branchName,
-                deleted: false,
-                reason: `It has associated PullRequests: ${branch.associatedPullRequests}`
-            });
-            continue;
-        }
         // Test includes/excludes pattern
         if (
             !shouldDelete(branch.branchName, {
@@ -216,7 +206,17 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             results.push({
                 branchName: branch.branchName,
                 deleted: false,
-                reason: `It is ignored by includes/excludes patterns`
+                reason: `This branch is ignored by includes/excludes patterns`
+            });
+            continue;
+        }
+        // if the branch has associated Pull Request, skip it
+        const hasBranchAssociatedPullRequests = branch.associatedPullRequests > 0;
+        if (hasBranchAssociatedPullRequests) {
+            results.push({
+                branchName: branch.branchName,
+                deleted: false,
+                reason: `This branch is matched patterns, but it has associated PullRequests: ${branch.associatedPullRequests}`
             });
             continue;
         }
@@ -227,7 +227,7 @@ export const deleteGitHubBranches = async (options: deleteGitHubBranchesOptions)
             results.push({
                 branchName: branch.branchName,
                 deleted: false,
-                reason: `This branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`
+                reason: `This branch is matched patterns, but this branch's stalledDays(${diffDays}) less than options.stalledDays(${stalledDays})`
             });
             continue;
         }
