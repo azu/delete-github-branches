@@ -152,6 +152,111 @@ $ GITHUB_TOKEN=$GH_TOKEN delete-github-branches --owner azu --repo delete-github
 })()
 ```
 
+## GitHub Actions
+
+You can delete mismatch branch automatically using GitHub Actions.
+
+- [azu/delete-github-branches-actions-demo: Demo: GitHub Actions + delete-github-branches](https://github.com/azu/delete-github-branches-actions-demo)
+    - It is demo project
+
+**Demo Features**
+
+- Cron delete mismatch branches at 00:00 everyday
+- If a PR is opend with mismatch branch, reply comment via bot
+
+Create a config file for `delete-github-branches` and put it to `.github/delete-github-branches.json`.
+
+```json
+{
+  "owner": "XXXXXXX",
+  "repo": "XXXXXXXX",
+  "excludesBranchPatterns": [
+    "master",
+    "develop",
+    "gh-pages",
+    "/^feature\/.*$/",
+    "/^renovate\/.*$/"
+  ],
+  "stalledDays": 30
+}
+```
+
+And create following GitHub Action yml and put it to `.github/workflows/delete-github-branches.yml`.
+    
+```yaml
+name: delete-github-branches
+
+on:
+  pull_request:
+    types: [opened]
+  # At 00:00 everyday
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  delete-branch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup Node ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node_version: 12.x
+      - name: Run delete-github-branches
+        run: |
+          npm install -g delete-github-branches@1
+          delete-github-branches --config ./.github/delete-github-branches.json
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  check-pull-request-branch:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: Setup Node ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
+        with:
+          node_version: 12.x
+      - name: Check branch name
+        id: check_branch_name
+        shell: bash -x {0}
+        run: |
+          echo "GITHUB_BRANCH: ${BRANCH_NAME}"
+          npm install -g delete-github-branches@1
+          RESULT_DELETE_GITHUB_BRANCH=$(delete-github-branches-check-branch-name --config ./.github/delete-github-branches.json "${BRANCH_NAME}")
+          RET=$?
+          if [ "$RET" = "1" ]; then
+              # multi-line issue https://github.community/t5/GitHub-Actions/set-output-Truncates-Multiline-Strings/td-p/37870
+              RESULT_DELETE_GITHUB_BRANCH="${RESULT_DELETE_GITHUB_BRANCH//'%'/'%25'}"
+              RESULT_DELETE_GITHUB_BRANCH="${RESULT_DELETE_GITHUB_BRANCH//$'\n'/'%0A'}"
+              RESULT_DELETE_GITHUB_BRANCH="${RESULT_DELETE_GITHUB_BRANCH//$'\r'/'%0D'}"
+              echo "::set-output name=message::${RESULT_DELETE_GITHUB_BRANCH}"
+              echo "::set-output name=invalid_branch_name::true"
+              echo "this branch name is invalid"
+              exit 0
+          fi
+          echo "Good branch name"
+          echo "${RESULT_DELETE_GITHUB_BRANCH}"
+        env:
+          BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/github-script@0.8.0
+        if: steps.check_branch_name.outputs.invalid_branch_name == 'true'
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `@${{ github.actor }} This branch name is mismatch branch naming rule.<br/><pre>${{steps.check_branch_name.outputs.message}}</pre>`
+            })
+```
+
 ## Changelog
 
 See [Releases page](https://github.com/azu/delete-github-branches/releases).
