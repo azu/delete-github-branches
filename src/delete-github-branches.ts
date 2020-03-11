@@ -161,6 +161,9 @@ export const deleteBranch = (options: deleteBranchOptions) => {
         ref: "heads/" + options.branchName
     });
 };
+export const DEFAULT_INCLUDES_BRANCH_PATTERNS = ["/^.*$/"];
+export const DEFAULT_EXCLUDES_BRANCH_PATTERNS = ["master", "develop", "dev", "gh-pages"];
+
 /**
  * Return true if it will be deleted
  * @param branchName
@@ -173,8 +176,8 @@ export const shouldDelete = (
         excludesBranchPatterns?: string[];
     }
 ) => {
-    const includesBranchPatterns = options.includesBranchPatterns ?? ["/^.*$/"];
-    const excludesBranchPatterns = options.excludesBranchPatterns ?? ["master", "develop", "dev", "gh-pages"];
+    const includesBranchPatterns = options.includesBranchPatterns ?? DEFAULT_INCLUDES_BRANCH_PATTERNS;
+    const excludesBranchPatterns = options.excludesBranchPatterns ?? DEFAULT_EXCLUDES_BRANCH_PATTERNS;
     const shouldNotDelete = matchPatterns(branchName, excludesBranchPatterns).length > 0;
     if (shouldNotDelete) {
         return false;

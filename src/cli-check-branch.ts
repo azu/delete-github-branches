@@ -1,5 +1,10 @@
 import meow from "meow";
-import { deleteGitHubBranchesOptions, shouldDelete } from "./delete-github-branches";
+import {
+    DEFAULT_EXCLUDES_BRANCH_PATTERNS,
+    DEFAULT_INCLUDES_BRANCH_PATTERNS,
+    deleteGitHubBranchesOptions,
+    shouldDelete
+} from "./delete-github-branches";
 import { parseConfig } from "./config-parse";
 import path from "path";
 
@@ -52,16 +57,32 @@ export const run = async (input = cli.input, flags = cli.flags) => {
     }
     const includesBranchPatterns = flags.includesBranchPatterns
         ? splitByComma(flags.includesBranchPatterns)
-        : config.includesBranchPatterns;
+        : config.includesBranchPatterns ?? DEFAULT_INCLUDES_BRANCH_PATTERNS;
     const excludesBranchPatterns = flags.excludesBranchPatterns
         ? splitByComma(flags.excludesBranchPatterns)
-        : config.excludesBranchPatterns;
+        : config.excludesBranchPatterns ?? DEFAULT_EXCLUDES_BRANCH_PATTERNS;
     const deletedBranchNames = input.filter(branchName => {
         return shouldDelete(branchName, { includesBranchPatterns, excludesBranchPatterns });
     });
     if (deletedBranchNames.length > 0) {
-        return { exitStatus: 1, stderr: null, stdout: `${deletedBranchNames.join(",")} will be deleted` };
+        return {
+            exitStatus: 1,
+            stderr: null,
+            stdout: `${deletedBranchNames.join(",")} is matched by delete-github-branches's patterns:
+{ 
+    includesBranchPatterns: ${includesBranchPatterns.join(",")}             
+    excludesBranchPatterns: ${excludesBranchPatterns.join(",")}             
+}`
+        };
     } else {
-        return { exitStatus: 0, stderr: null, stdout: `${input.join(",")} will not be deleted` };
+        return {
+            exitStatus: 0,
+            stderr: null,
+            stdout: `${input.join(",")} is not matched by delete-github-branches's patterns: 
+{ 
+    includesBranchPatterns: ${JSON.stringify(includesBranchPatterns)}             
+    excludesBranchPatterns: ${JSON.stringify(excludesBranchPatterns)}             
+}`
+        };
     }
 };
