@@ -32,7 +32,7 @@ export type deleteGitHubBranchesOptions = {
     /**
      * You can set deletable stalled days after the branch is last pushed
      * Delete branches that are stalled 30 days by default
-     * if today >= lastPushedDate + 30, its deletable
+     * It means that today >= lastPushedDate + 30 and its deletable
      * if you set options.stalledDay is 0, delete the branch match patterns immediately
      * Default: 30
      */
