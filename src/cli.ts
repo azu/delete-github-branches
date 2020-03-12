@@ -54,8 +54,7 @@ export const cli = meow(
                 type: "string"
             },
             dryRun: {
-                type: "boolean",
-                default: false
+                type: "boolean"
             },
             config: {
                 type: "string"
@@ -89,7 +88,7 @@ export const run = async (_input = cli.input, flags = cli.flags) => {
         stalledDays: flags.stalledDays ?? config.stalledDays,
         baseUrl: flags.baseUrl ?? config.baseUrl,
         token: flags.token ?? config.token ?? process.env.GITHUB_TOKEN,
-        dryRun: flags.dryRun ?? config.dryRun
+        dryRun: flags.dryRun ?? config.dryRun ?? false
     });
     if (flags.format === "json") {
         return formatJSON({
