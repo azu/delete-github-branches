@@ -1,7 +1,9 @@
 import { graphql } from "@octokit/graphql";
 import { Octokit } from "@octokit/rest";
+import type { GraphQlQueryResponseData } from "@octokit/graphql";
 import { matchPatterns } from "@textlint/regexp-string-matcher";
 import dayjs from "dayjs";
+import { RestEndpointMethodTypes } from "@octokit/plugin-rest-endpoint-methods/dist-types/generated/parameters-and-response-types";
 
 export type deleteGitHubBranchesOptions = {
     /**
@@ -72,7 +74,7 @@ export const getBranches = async (
         cursor?: string;
     }
 ): Promise<BranchResponse> => {
-    const response = await graphql({
+    const response: GraphQlQueryResponseData["repository"] = await graphql({
         query: `query getExistingRepoBranches($owner: String!, $repo: String!, $after: String) {
     repository(owner: $owner, name: $repo) {
       id
@@ -150,7 +152,9 @@ export type deleteBranchOptions = {
     baseUrl?: string;
     token: string;
 };
-export const deleteBranch = (options: deleteBranchOptions) => {
+export const deleteBranch = (
+    options: deleteBranchOptions
+): Promise<RestEndpointMethodTypes["git"]["deleteRef"]["response"]> => {
     const octokit = new Octokit({
         auth: options.token,
         baseUrl: options.baseUrl ?? "https://api.github.com"
