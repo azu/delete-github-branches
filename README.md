@@ -193,6 +193,10 @@ on:
   schedule:
     - cron: '0 0 * * *'
 
+permissions:
+  contents: write
+  issues: write
+
 jobs:
   delete-branch:
     runs-on: ubuntu-latest
@@ -201,7 +205,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Setup Node ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node_version: 12.x
       - name: Run delete-github-branches
@@ -218,7 +222,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: Setup Node ${{ matrix.node_version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
           node_version: 12.x
       - name: Check branch name
