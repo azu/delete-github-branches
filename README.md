@@ -196,6 +196,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-request: write
 
 jobs:
   delete-branch:
